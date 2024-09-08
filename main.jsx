@@ -6,5 +6,5 @@ import './index.css'
 createRoot(document.getElementById('root')).render(
   //<StrictMode>
     <App />
-  //</StrictMode>, //i disabled the strict mode to ensure that the tester of fcc work
+  //</StrictMode>, //i disabled the strict mode to try if the tester of fcc work
 )
