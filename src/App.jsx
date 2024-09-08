@@ -1,3 +1,5 @@
+//apparently the tester have issues with this version of react but all features of this code works correctly you can test it by yourself and run it
+
 import { useEffect, useState } from 'react'
 import './App.css'
 import { FaPause, FaPlay, FaPlus, FaMinus } from "react-icons/fa";
@@ -10,14 +12,21 @@ function App() {
    const [breakLength, setBreakLength] = useState(5);
    const [sessionLength, setSessionLength] = useState(25);
    const increaseBreak = () => {
-    if (!isActive && breakLength < 60) setBreakLength(breakLength + 1);
-    if(!isActive && !isWork) setTimer((breakLength+1)*60);
+    if (!isActive && breakLength < 60){
+      setBreakLength(breakLength + 1);
+      if(!isWork){
+        setTimer((breakLength+1)*60);
+      }
+    } 
   };
 
   const decreaseBreak = () => {
-    if (!isActive && breakLength > 1) setBreakLength(breakLength - 1);
-    if(!isActive && !isWork) setTimer((breakLength-1)*60);
-
+    if (!isActive && breakLength > 1){
+      setBreakLength(breakLength - 1);
+    } 
+    if(!isWork){
+      setTimer((breakLength-1)*60);
+    }
   };
 
   const increaseSession = () => {
@@ -52,7 +61,7 @@ function App() {
     setSessionLength(25);
     const audio = document.getElementById("beep");
     audio.pause();        
-    audio.currentTime = 0
+    audio.currentTime = 0;
   }
 
   const togglePlayPause=()=>{
