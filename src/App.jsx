@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { FaPause, FaPlay, FaPlus, FaMinus } from "react-icons/fa";
 import { RiRestartLine } from "react-icons/ri";
@@ -9,6 +9,7 @@ function App() {
    const [isActive, setIsActive] = useState(false);
    const [breakLength, setBreakLength] = useState(5);
    const [sessionLength, setSessionLength] = useState(25);
+   const timerRef = useRef(null)
    const increaseBreak = () => {
     if (!isActive && breakLength < 60){
       setBreakLength(breakLength + 1);
@@ -50,6 +51,7 @@ function App() {
   }
 
   const reset=()=>{
+    clearInterval(timerRef.current); 
     setTimer(25*60);
     setIsActive(false);
     setIsWork(true);
@@ -61,31 +63,34 @@ function App() {
   }
 
   const togglePlayPause=()=>{
-    setIsActive(!isActive);
+    setIsActive((prevActive) => !prevActive);
   }
 
   useEffect(() => {
-    let interval = null;
     if (isActive) {
-      interval = setInterval(() => {
-        if (timer === 0) {
-          document.getElementById('beep').play();
-          if (isWork) {
-            setIsWork(false); 
-            setTimer(breakLength * 60); 
+      timerRef.current = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer === 0) {
+            document.getElementById('beep').play();
+            if (isWork) {
+              setIsWork(false);
+              return breakLength * 60; 
+            } else {
+              setIsWork(true);
+              return sessionLength * 60; 
+            }
           } else {
-            setIsWork(true); 
-            setTimer(sessionLength * 60); 
+            return prevTimer - 1; 
           }
-        } else {
-          setTimer((prev) => prev - 1); 
-        }
+        });
       }, 1000);
     } else if (!isActive && timer !== 0) {
-      clearInterval(interval);
+      clearInterval(timerRef.current); 
     }
-    return () => clearInterval(interval);
+  
+    return () => clearInterval(timerRef.current); 
   }, [isActive, isWork, breakLength, sessionLength]);
+  
 
   return (
     <div className='bg-slate-900 flex flex-col items-center justify-center w-full h-full rounded-md p-4 sm:w-screen' >
